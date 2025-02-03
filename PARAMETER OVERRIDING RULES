@@ -1,0 +1,57 @@
+Today, we explored parameters in Verilog, a crucial feature for making designs flexible and reusable. Parameters allow us to define constant values that can be modified during module instantiation.
+
+🔹 Key Concepts of Verilog Parameters
+
+✅ Parameters define constant values inside a module using the parameter keyword.
+✅ They are evaluated at compile time and cannot be modified during simulation.
+✅ They make RTL code scalable and configurable for different design needs.
+
+Example:
+
+module parameter_example #(parameter WIDTH = 8) (input [WIDTH-1:0] data_in, output [WIDTH-1:0] data_out);
+  assign data_out = data_in;
+endmodule
+
+Here, WIDTH is a parameter with a default value of 8, but it can be overridden when instantiating the module.
+
+🔹 Overriding Parameters in Verilog
+
+Verilog allows two methods to override parameters:
+
+1️⃣ Order-Based Overriding
+
+parameter_example #(16) my_instance (data_in, data_out);  // WIDTH = 16
+
+2️⃣ Named Parameter Overriding (Recommended)
+
+parameter_example #(.WIDTH(16)) my_instance (.data_in(input_data), .data_out(output_data));
+
+🔸 Named parameter overriding is preferred as it improves readability and avoids confusion when multiple parameters exist.
+
+🔹 Rules for Parameter Overriding
+
+⚡ Parameters must be overridden at instantiation and cannot change during runtime.
+⚡ If not overridden, the default value is used.
+⚡ Named overriding is preferred over order-based overriding for clarity.
+⚡ Ensure proper bit-width matching when overriding parameters to avoid truncation or padding issues.
+
+🔹 Common Errors & Fixes
+
+❌ Illegal output port connection (vopt-8884): Connecting a reg type output from a module directly to another reg is not allowed.
+✅ Solution: Use wire for module output connections or introduce an intermediate wire before assigning to a reg.
+
+Example Fix:
+
+wire [WIDTH-1:0] temp_output;
+parameter_example #(.WIDTH(16)) my_instance (.data_in(input_data), .data_out(temp_output));
+assign output_data = temp_output;  // Assign wire to reg
+
+🔹 Why Parameters Matter in RTL Design?
+
+🔹 Scalability - Design once, reuse with different configurations.
+🔹 Readability - Self-documenting code with clear constants.
+🔹 Efficient Testing - Parameterized modules help in generating multiple test scenarios.
+
+One of the important thing to remember is we can not connect reg to reg 
+We can connect wire to reg or reg to wire 
+We can connect wire to wire 
